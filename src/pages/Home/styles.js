@@ -33,7 +33,6 @@ export const Header = styled.header`
 
   a{
     color: ${({ theme }) => theme.colors.primary.main};
-    text-decoration: none;
     font-weight: bold;
     border: 2px solid ${({ theme }) => theme.colors.primary.main};
     padding: 8px 16px;
