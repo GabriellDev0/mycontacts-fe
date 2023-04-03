@@ -13,18 +13,37 @@ export default function ContactForm({ ButtonLabel }) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [category, setCategory] = useState('');
+  const [errors, setErrors] = useState([]);
+
+  const handleNameChange = ({ target }) => {
+    setName(target.value);
+
+    // Estou validando o target.value em vez do state Name porque,
+    // O State ele é uma operação asyncrona, então se eu tentar pegar ele
+    // logo em baixo, ele não vai estar com o valor devidamente atualizado
+    // por isso estou usando target.value, pois é o valor que está no momento.
+
+    if (!target.value) {
+      setErrors((prevState) => [...prevState, {
+        field: 'name',
+        message: 'Nome é obrigatório.',
+      }]);
+    } else {
+      setErrors((prevState) => prevState.filter(
+        (error) => error.field !== 'name',
+      ));
+    }
+  };
+  console.log(errors);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({
-      name, email, phone, category,
-    });
   };
 
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup>
-        <Input placeholder="Nome" value={name} onChange={({ target }) => setName(target.value)} />
+        <Input placeholder="Nome" value={name} onChange={handleNameChange} />
       </FormGroup>
 
       <FormGroup>
