@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
-
 import { useState } from 'react';
+
+import isEmailValid from '../../utils/isEmailValid';
+
 import { Form, ButtonContainer } from './styles';
 
 import FormGroup from '../FormGroup';
@@ -17,12 +19,10 @@ export default function ContactForm({ ButtonLabel }) {
 
   const handleNameChange = ({ target }) => {
     setName(target.value);
-
     // Estou validando o target.value em vez do state Name porque,
     // O State ele é uma operação asyncrona, então se eu tentar pegar ele
     // logo em baixo, ele não vai estar com o valor devidamente atualizado
     // por isso estou usando target.value, pois é o valor que está no momento.
-
     if (!target.value) {
       setErrors((prevState) => [...prevState, {
         field: 'name',
@@ -34,6 +34,28 @@ export default function ContactForm({ ButtonLabel }) {
       ));
     }
   };
+
+  const handleEmailChange = ({ target }) => {
+    setEmail(target.value);
+
+    if (target.value && !isEmailValid(target.value)) {
+      const errorAlreadyExists = errors.find((error) => error.field === 'email');
+
+      if (errorAlreadyExists) {
+        return;
+      }
+
+      setErrors((prevState) => [...prevState, {
+        field: 'email',
+        message: 'E-mail inválido.',
+      }]);
+    } else {
+      setErrors((prevState) => prevState.filter(
+        (error) => error.field !== 'email',
+      ));
+    }
+  };
+
   console.log(errors);
 
   const handleSubmit = (e) => {
@@ -47,7 +69,7 @@ export default function ContactForm({ ButtonLabel }) {
       </FormGroup>
 
       <FormGroup>
-        <Input placeholder="E-mail" value={email} onChange={({ target }) => setEmail(target.value)} />
+        <Input placeholder="E-mail" value={email} onChange={handleEmailChange} />
       </FormGroup>
 
       <FormGroup>
